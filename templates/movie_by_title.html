@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+{% for show in shows %}
+<h1>Title: <a href="https://ru.wikipedia.org/wiki/{{ title }}">{{ show.title }}</a></h1>
+<p>Country: {{ show.country }}</p>
+<p>Release year: {{ show.release_year }}</p>
+<p>Genre: {{ show.genre }}</p>
+<p>Description: {{ show.description }}</p>
+{% endfor %}
+</body>
+</html>
