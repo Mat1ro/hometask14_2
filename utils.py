@@ -62,6 +62,7 @@ def adult():
         return from_sql_to_json(result)
 
 
+# Проблема с этой функцией
 def shows_by_genre(genre):
     with sqlite3.connect("data/netflix.db") as connection:
         cursor = connection.cursor()
