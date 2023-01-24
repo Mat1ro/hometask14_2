@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from utils import *
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 
 @app.route('/movie/<title>')
@@ -19,25 +19,25 @@ def from_to_years(from_year, to_year):
 @app.route('/rating/children')
 def rating_children():
     shows = children()
-    return render_template('rating.html', shows=shows)
+    return render_template('films.html', shows=shows)
 
 
 @app.route('/rating/family')
 def rating_family():
     shows = family()
-    return render_template('rating.html', shows=shows)
+    return render_template('films.html', shows=shows)
 
 
 @app.route('/rating/adult')
 def rating_adult():
     shows = adult()
-    return render_template('rating.html', shows=shows)
+    return render_template('films.html', shows=shows)
 
 
 @app.route('/genre/<genre>')
-def genre_page():
-    shows = family()
-    return render_template('rating.html', shows=shows)
+def genre_page(genre):
+    shows = shows_by_genre(genre)
+    return render_template('films.html', shows=shows)
 
 
 if __name__ == '__main__':

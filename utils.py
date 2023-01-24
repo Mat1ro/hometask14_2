@@ -62,7 +62,6 @@ def adult():
         return from_sql_to_json(result)
 
 
-# Проблема с этой функцией
 def shows_by_genre(genre):
     with sqlite3.connect("data/netflix.db") as connection:
         cursor = connection.cursor()
@@ -72,8 +71,54 @@ def shows_by_genre(genre):
         WHERE listed_in LIKE ?
         ORDER BY release_year desc LIMIT 10
         """
-        result = cursor.execute(query, (genre,)).fetchall()
+        result = cursor.execute(query, ('%' + genre + '%',)).fetchall()
         return from_sql_to_json(result)
+
+
+def two_actors(first, second):
+    with sqlite3.connect("data/netflix.db") as connection:
+        cursor = connection.cursor()
+        query = """
+        SELECT netflix.cast
+        FROM netflix
+        WHERE netflix.cast LIKE ?
+        AND netflix.cast LIKE ?
+        """
+        result = cursor.execute(query, ('%' + first + '%', '%' + second + '%',)).fetchall()
+        d = {}
+        for i in result:
+            for j in i:
+                for h in j.split(', '):
+                    if h in d.keys():
+                        d[h] += 1
+                    else:
+                        d[h] = 1
+        actors = []
+        for key, value in d.items():
+            if key == first or key == second:
+                pass
+            else:
+                if value >= 2:
+                    actors.append(key)
+        return '\n'.join(actors)
+
+
+def films_by_type_release_genre(type, release, genre):
+    with sqlite3.connect("data/netflix.db") as connection:
+        cursor = connection.cursor()
+        query = """
+        SELECT title, description
+        FROM netflix
+        WHERE type = ?
+        AND release_year = ?
+        AND listed_in LIKE ?
+        """
+        result = cursor.execute(query, (type, release, '%' + genre + '%',)).fetchall()
+        shows = []
+        for i in result:
+            shows.append({'title': i[0],
+                          'description': i[1][:-1]})
+        return shows
 
 
 def from_sql_to_json(data):
@@ -91,4 +136,4 @@ def from_sql_to_json(data):
     return movies
 
 
-print(shows_by_genre('Shows'))
+print(films_by_type_release_genre('TV Show', '2020', 'Horror'))
